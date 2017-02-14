@@ -1,0 +1,13 @@
+---
+# handlers file for gitlab-centos
+- name: restart_postfix
+  become: yes
+  service:
+    name: postfix
+    state: restarted
+
+- name: start_gitlab
+  shell: gitlab-ctl start
+
+- name: yum_clean
+  shell: yum clean all

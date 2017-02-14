@@ -1,0 +1,71 @@
+---
+# tasks file for gitlab-centos
+
+- name: Install pre-reqs
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present  
+  with_items:
+    - curl 
+    - wget 
+    - policycoreutils
+    - postfix
+  tags: 
+    - pre-reqs
+
+- name: Enable Postfix service
+  become: yes
+  service:
+    name: postfix 
+    enabled: yes
+    state: started
+  notify: restart_postfix
+  tags: 
+    - postfix
+
+- name: Copy GitLab Repo Template
+  become: yes
+  template:
+    src: gitlab.repo.j2
+    dest: /etc/yum.repos.d/gitlab.repo
+    owner: root
+    group: root
+    mode: 755 
+  tags:
+    - gitlab 
+    - gitlab_repo
+  notify: yum_clean
+
+- name: Installing GitLab
+  become: yes
+  yum:
+    name: gitlab-ce
+    state: present
+    disable_gpg_check: yes 
+  tags:
+    - gitlab
+
+- name: GitLab reconfigure
+  become: yes
+  shell: gitlab-ctl reconfigure
+  tags: 
+    - gitlab
+  notify: start_gitlab
+
+- name: Open Firewall Ports 
+  become: yes
+  firewalld: 
+    permanent: true
+    service: "{{ item }}"
+    state: enabled
+    immediate: yes
+  with_items:
+    - http
+    - https
+
+- name: Display Password
+  debug: 
+    msg: "Login credentials for the GitLab admin are  root / 5iveL!fe"
+  tags: 
+    - gitlab
