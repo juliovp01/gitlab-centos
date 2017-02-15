@@ -43,6 +43,7 @@
     name: gitlab-ce
     state: present
     disable_gpg_check: yes 
+    validate_certs: no
   tags:
     - gitlab
 
