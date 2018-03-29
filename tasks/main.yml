@@ -1,6 +1,9 @@
 ---
 # tasks file for gitlab-centos
 
+- name: Install test package
+  shell: yum install nano -y
+
 - name: Install pre-reqs
   become: yes
   yum:
@@ -43,13 +46,12 @@
     name: gitlab-ce
     state: present
     disable_gpg_check: yes 
-    validate_certs: no
   tags:
     - gitlab
 
 - name: GitLab reconfigure
   become: yes
-  shell: gitlab-ctl reconfigure
+  shell: /bin/gitlab-ctl reconfigure
   tags: 
     - gitlab
   notify: start_gitlab
