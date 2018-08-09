@@ -8,7 +8,7 @@ This role install GitLab CE on a CentOS/RHEL 7 server.
 Requirements
 ------------
 
-You will need to have internet access on the target server in order to be able to get and install the required packages. 
+You need internet access on the target server in order to be able to get and install the required packages. 
 
 Dependencies
 ------------
